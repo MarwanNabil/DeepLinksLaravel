@@ -2,6 +2,10 @@
 
 @section('content')
 
+@php
+    use App\Models\Hashtag;
+    $hashtags = Hashtag::get();
+@endphp
 
 <div class="container">
 
@@ -15,8 +19,16 @@
                         @method('POST')
                         <input class="form-control" name="title" placeholder="title..">
                         <textarea class="form-control" name="content" placeholder="content.." rows="3"></textarea>
+                        <br>
                         <label for="formFile" class="form-label">Image</label>
                         <input class="form-control" type="file" name="image">
+                        <br>
+                        <label for="formFile" class="form-label">Hashtags</label>
+                        <select class="form-select form-select-sm" aria-label="Choose your hashtags" name="hashtags[]" multiple="multiple" multiple data-mdb-filter="true">
+                            @foreach ($hashtags as $hashtag)
+                                <option value="{{ $hashtag->id }}">{{ $hashtag->name }}</option>
+                            @endforeach
+                        </select>
                         <br>
                         <button type="submit" class="btn btn-primary" style="float: right;">Post</button>
                     </form>
@@ -42,12 +54,25 @@
                         <div class="card-body">
                             <div style="padding-left:10px;">
                                 {!! '<h2>' . $post->title . '</h2>' !!}
+                                {!! '<h6>' . $post->updated_at . '</h6>' !!}
+                                <br>
                                 {!! '<h5>' . $post->content . '</h5>' !!}
                                 <br>
                                 @if ( !empty($post->picture) )
                                     <img style="width:100%; height:auto; margin-left:auto; margin-right:auto; display:block;" src="{{ $post->picture }}"data-holder-rendered="true" />
                                 @endif
                                 <br>
+                                @php
+                                    $hashtags = $post->hashtags;
+                                @endphp
+                                <br><br>
+                                @foreach ($hashtags as $hashtag)
+                                    <a type="button"  class="btn" style="background-color: {{ $hashtag->color }}" href="/hashtag/view/{{$hashtag->name}}">
+                                        <span class="badge">
+                                        {{$hashtag->name}}
+                                        </span>
+                                    </a>
+                                @endforeach
                             </div>
                         </div>
                     </div>

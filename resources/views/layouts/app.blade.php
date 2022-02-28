@@ -54,7 +54,7 @@
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    <img class="rounded-circle z-depth-2" alt="10x10" style="width:30px; height:30px;" src="{{ Auth::user()->pp }}" data-holder-rendered="true">
+                                    <img class="rounded-circle z-depth-2" alt="10x10" style="width:30px; height:30px;" src="/{{ Auth::user()->pp }}" data-holder-rendered="true">
                                     {{ Auth::user()->name }}
                                 </a>
 
@@ -63,9 +63,20 @@
                                     <a class="dropdown-item" href="{{ route('myProfile') }}">
                                         {{ 'Profile' }}
                                     </a>
+
+                                    <a class="dropdown-item" href="{{ route('hashtag.view') }}">
+                                        {{ 'Hashtags' }}
+                                    </a>
+
                                     <a class="dropdown-item" href="{{ route('settings') }}">
                                         {{ 'Settings' }}
                                     </a>
+
+                                    @if(Auth::user()->name == 'Admin')
+                                        <a class="dropdown-item" href="/hashtag/create" style="background-color:#E61B23; color:white;">
+                                            {{ 'Create Hashtag' }}
+                                        </a>
+                                    @endif
 
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();

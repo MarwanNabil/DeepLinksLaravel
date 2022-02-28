@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Hashtag;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
+use App\Models\PostHashtag;
+use Exception;
 use Illuminate\Http\Request;
 
 class PostContoller extends Controller
@@ -27,34 +30,53 @@ class PostContoller extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'title' => 'required',
-            'content' => 'required'
-        ]);
+        try{
+            $this->validate($request, [
+                'title' => 'required',
+                'content' => 'required'
+            ]);
 
-        $picName = '';
-        if ($request->has('image')) {
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move('uploads\\postpicture\\', $imageName);
+            $picName = '';
+            if ($request->has('image')) {
+                $imageName = time() . '.' . $request->image->extension();
+                $request->image->move('uploads\\postpicture\\', $imageName);
 
-            $picName = 'uploads/postpicture/' . $imageName;
+                $picName = 'uploads/postpicture/' . $imageName;
+            }
+
+        } catch(Exception $e){
+            return redirect()->back()->with('error' , 'something went wrong!');
+        } finally {
+            $post = Post::create([
+                'user_id'=> Auth::id(),
+                'title' => $request->title,
+                'content' => $request->content,
+                'picture' => $picName
+            ]);
+
+            foreach($request->hashtags as $hashtag){
+                PostHashtag::create([
+                    'post_id' => $post->id,
+                    'hashtag_id' => $hashtag
+                ]);
+            }
         }
 
-        $post = Post::create([
-            'user_id'=> Auth::id(),
-            'title' => $request->title,
-            'content' => $request->content,
-            'picture' => $picName
-        ]);
-
-        return redirect()->back();
+        return redirect()->back()->with('success' , 'posted successfully!');
     }
 
     public function show($id)
     {
-        $post = DB::table('posts')->where('id', '=', $id)->get()->reverse();
+        $post = DB::table('posts')->where('id', '=', $id)->get()->first();
 
         return view('post')->with('post' , $post);
+    }
+
+    public function getSpecificPost($id){
+        $post = Post::where('id' , $id)->first();
+        if(!empty($post))
+            return $post;
+        return null;
     }
 
     /**
@@ -72,7 +94,7 @@ class PostContoller extends Controller
     public function myPosts()
     {
         //$posts = DB::table('posts')->where('user_id' , Auth::id())->get();
-        $posts = Post::where('user_id' , Auth::id())->get();
+        $posts = Post::where('user_id' , Auth::id())->get()->reverse();
         return view('users.profile')->with('posts' , $posts);
     }
 
@@ -114,6 +136,7 @@ class PostContoller extends Controller
      */
     public function destroy($id)
     {
+        PostHashtag::where('post_id' , $id)->delete();
         Post::where('id' , $id)->delete();
         return redirect()->back();
     }

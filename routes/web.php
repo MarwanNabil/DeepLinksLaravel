@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostContoller;
+use App\Http\Controllers\HashtagController;
 
 
 
@@ -36,3 +37,9 @@ Route::get('/profile' , [PostContoller::class, 'myPosts'])->name('myProfile');
 
 Route::get('/settings' , [UserController::class, 'index'])->name('settings');
 Route::post('/settings/update' , [UserController::class, 'update'])->name('settings.update');
+
+
+Route::get('/hashtag/view' , [HashtagController::class , 'view'])->name('hashtag.view');
+Route::get('/hashtag/create' , [HashtagController::class , 'create'])->name('hashtag.create');
+Route::post('/hashtag/store/' , [HashtagController::class , 'store'])->name('hashtag.store');
+Route::get('/hashtag/view/{name}/' , [HashtagController::class , 'show'])->name('hashtag.show');
