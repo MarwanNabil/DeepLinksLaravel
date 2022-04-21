@@ -63,9 +63,13 @@ This section should list any major frameworks/libraries used to bootstrap your p
 ## Contact
 
 Marwan Nabil
+<br>
 Yaser Hafiz
 
 Email : Marwan.Nabil.ElDeep@gmail.com
+<br>
 Email : yaserhafiz9999@gmail.com
-
+<br>
 Linkedin : https://www.linkedin.com/in/marwan-nabil-eldeep-3870bb179/
+<br>
+Linkedin : https://www.linkedin.com/in/yaser-hafiz-23080b18a/
