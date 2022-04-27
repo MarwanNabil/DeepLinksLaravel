@@ -16,6 +16,7 @@ class UserController extends Controller
         if( !Auth::check() ){
             return view('auth.login');
         }
+        
         $home = new PostContoller();
         return $home->index();
     }
